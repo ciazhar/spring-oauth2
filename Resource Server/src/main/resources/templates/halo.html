@@ -6,5 +6,9 @@
     <h1>Halo Spring Boot</h1>
     <h2>Waktu saat ini : <span th:text="${waktu}"></span></h2>
     <h3>Pesan : <span th:text="*{pesan}?:''">Halo</span></h3>
+
+    <form name="f" th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout" />
+    </form>
 </body>
 </html>
