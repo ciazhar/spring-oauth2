@@ -1,4 +1,4 @@
-package com.ciazhar.resource.server.config;
+package com.ciazhar.authorization.server.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;

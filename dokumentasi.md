@@ -181,18 +181,26 @@ Selanjutnya kita akan pindahkan otorisasi kita yang ada di (/resource-server/src
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>mysql-connector</artifactId>
+    </dependency>
   ```
 - Lalu kita akan konfigurasi database di (/resource-server/src/main/resources/application.properties)
   ```
-  spring.datasource.url=jdbc:mysql://localhost:3307/belajar_oauth
+  spring.datasource.url=jdbc:mysql://localhost:3306/belajar_oauth
   spring.datasource.username=belajar
   spring.datasource.password=belajar
+  ```
+- Generate JPA(/resource-server/src/main/resources/application.properties)
+  ```
+  spring.jpa.generate-ddl=true
   ```
 - Pertama kita akan buat database dulu(CLI)
   ```
       mysql -u root -p
       grant all on belajar_oauth.* to belajar@localhost identified by 'belajar'
-      create database pelatihan;
+      create database belajar_oauth;
     ```
 - Cara menggunakan mysql (CLI)
     ```
@@ -209,13 +217,13 @@ Selanjutnya kita akan pindahkan otorisasi kita yang ada di (/resource-server/src
       id INT PRIMARY KEY AUTO_INCREMENT,
       username VARCHAR(100) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL,
-      active BOOLEAN
+      enabled BOOLEAN
   ) Engine=InnoDB;
 
-  insert into s_users (username, password, active)
-  values ('endy', '123', true);
-  insert into s_users (username, password, active)
-  values ('adi', '123', true);
+  insert into s_users (username, password, enabled)
+  values ('admin', '123', true);
+  insert into s_users (username, password, enabled)
+  values ('ciazhar', '123', true);
 
   create table s_permissions (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -232,13 +240,16 @@ Selanjutnya kita akan pindahkan otorisasi kita yang ada di (/resource-server/src
   insert into s_permissions (id_user, user_role)
   values (2, 'ROLE_OPERATOR');
   ```
-- pindah otorisasi ke database
+- pindah otorisasi ke database (/resource-server/src/main/java/domain/config/KonfigurasiSecurity)
   ```
+    @Autowired
+    private DataSource dataSource;
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery("select username, password, "
-                        + "active as enabled from s_users where username=?")
+                        + "enabled from s_users where username=?")
                 .authoritiesByUsernameQuery("select u.username, p.user_role  "
                         + "from s_users u  "
                         + "inner join s_permissions p on u.id = p.id_user "
@@ -254,6 +265,9 @@ Selanjutnya kita akan pindahkan otorisasi kita yang ada di (/resource-server/src
   - Isi dependency yang dubutuhkan berupa :
     * web
     * thymeleaf
+    * security
+    * jdbc
+    * mysql
   - Download lalu pindahkan ke text editor
 - Lalu kita akan pindahkan file file otorisasi sebagai berikut :
   - KonfigurasiSecurity.java
@@ -334,12 +348,14 @@ Ada beberapa file yang perlu dikonfigurasi yaitu :
 - setup security (auth-server/src/main/resources/application.properties)
   ```
   logging.level.org.springframework.security=DEBUG
+  server.port=10000
   ```
 - Buat class KonfigurasiAuthorizationServer (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java)
   ```
   @Configuration
   public class KonfigurasiAuthorizationServer {
-
+  
+  }
   ```
 - Buat inner class AuthorizationServerConfiguration (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java)
   ```
@@ -347,7 +363,8 @@ Ada beberapa file yang perlu dikonfigurasi yaitu :
   @EnableAuthorizationServer
   protected static class AuthorizationServerConfiguration extends
            AuthorizationServerConfigurerAdapter {
-
+  
+  }
   ```
 - Setup RESOURCE_ID (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java)
   ```
@@ -386,32 +403,41 @@ Ada beberapa file yang perlu dikonfigurasi yaitu :
         .secret("123456")
         .authorizedGrantTypes("authorization_code","refresh_token")
         .authorities("CLIENT")
-        .scope("read","write")
+        .scopes("read","write")
         .resourceIds(RESOURCE_ID)
       .and()
       .withClient("clientcred")
         .secret("123456")
         .authorizedGrantTypes("client_credentials")
-        .scope("trust")
+        .scopes("trust")
         .resourceIds(RESOURCE_ID)
       .and()
       .withClient("clientapp")
         .secret("123456")
         .authorizedGrantTypes("password")
-        .scope("read","write")
+        .scopes("read","write")
         .resourceIds(RESOURCE_ID)  
       .and()
       .withClient("jsclient")
         .secret("123456")
         .authorizedGrantTypes("implicit")
         .authorities("CLIENT")
-        .scope("read","write")
+        .scopes("read","write")
         .resourceIds(RESOURCE_ID)
-        .redirectUrls("http://localhost:20000/implicit-client")
+        .redirectUris("http://localhost:20000/implicit-client")
         .accessTokenValiditySeconds(60* 60 *24)
         .autoApprove(true);
   }
   ```
+- Konfigurasi Security (auth-server/src/main/java/domain/config/KonfigurasiSecurity)
+  ```
+  @Override
+      @Bean
+      public AuthenticationManager authenticationManagerBean() throws Exception {
+          return super.authenticationManagerBean();
+      }
+  ```
+  
 
 # Flow untuk masing masing role clint #
 Perlu diketahui authorization server akan jalan di port 10000 dan resource server akan jalan di port 8080. OAuth 2 sendiri menyediakan 4 role yaitu :
