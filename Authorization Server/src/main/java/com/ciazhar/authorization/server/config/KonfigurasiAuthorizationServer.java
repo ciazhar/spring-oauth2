@@ -35,7 +35,8 @@ public class KonfigurasiAuthorizationServer {
         }
         @Override
         public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-            oauthServer.checkTokenAccess("hasRole('CLIENT')");
+            oauthServer.checkTokenAccess("hasAuthority('CLIENT')");
+            //oauthServer.checkTokenAccess("hasRole('ROLE_CLIENT')"); bisa pilih salah satu
         }
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
