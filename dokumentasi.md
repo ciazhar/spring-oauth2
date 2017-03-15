@@ -19,10 +19,10 @@ Step by Step nya adalah sebagai berikut :
 - Download lalu pindahkan ke text editor
 - Kita coba bikin Controller sebagi resources (resource-server/src/main/java/domain/controller/HaloController)
   ```
-  @Controller
-  public class ResourceServerController{
+    @Controller
+    public class ResourceServerController{
 
-  }
+    }
   ```
 - Kita bikin methode untuk di proses ke user. Methode ini akan mengembalikan waktu sekarang menggunakan variabel `waktu`. methode ini dapat diakses di url /halo.(resource-server/src/main/java/domain/controller/HaloController)
   ```
@@ -69,109 +69,109 @@ Step by Step nya adalah sebagai berikut :
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
-  </dependency>
+    </dependency>
   ```
   Pada keadaan ini kita akan diminta otorisasi jika kita mengakses di browser dengan username : `user` dan password yang ada pada CLI. karena tidak efisien kita akan tambahkan konfigurasi untuk otorisasi.
 - Buat class untuk konfigurasi otorisasi (/resource-server/src/main/java/domain/config/KonfigurasiSecurity)
   ```
-  @Configuration
-  public class KonfigurasiSecurity  extends WebSecurityConfigurerAdapter {
+    @Configuration
+    public class KonfigurasiSecurity  extends WebSecurityConfigurerAdapter {
 
-  }
+    }
   ```
 - Buat methode untuk mengkonfigurasi otorisasi(/resource-server/src/main/java/domain/config/KonfigurasiSecurity.java)
   ```
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-      auth.inMemoryAuthentication()
-              .withUser("admin")
-                  .password("123")
-                  .roles("USER");
-  }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("admin")
+                    .password("123")
+                    .roles("USER");
+    }
   ```
   Pada keadaan ini kita sudah dapat login tapi masih dengan interface dari browser. Selanjutnya kita akan konfig untuk interface htmlnya.
 - Konfigurasi UI untuk login(/resource-server/src/main/java/domain/config/KonfigurasiSecurity.java)
   ```
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-      http
-              .authorizeRequests()
-              .anyRequest().authenticated()
-              .and()
-              .formLogin().loginPage("/login").permitAll()
-              .defaultSuccessUrl("/halo")
-              .and()
-              .logout();
-  }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().loginPage("/login").permitAll()
+                .defaultSuccessUrl("/halo")
+                .and()
+                .logout();
+    }
   ```
   Pada keadaan ini kita sudah dapat login dengan UI html yang disediakan oleh spring
 - Membuat UI html sendiri(/resource-server/src/main/resources/templates/login.html)
   ```
-  <html>
-      <head>
-          <title>Login Page</title>
-          <!-- Latest compiled and minified CSS -->
-          <link rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+    <html>
+        <head>
+            <title>Login Page</title>
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet"
+                  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 
-          <!-- Optional theme -->
-          <link rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
+            <!-- Optional theme -->
+            <link rel="stylesheet"
+                  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
 
-          <link rel="stylesheet"
-                href="css/aplikasi.css"/>
+            <link rel="stylesheet"
+                  href="css/aplikasi.css"/>
 
-      </head>
-      <body>
-          <div class="container">
+        </head>
+        <body>
+            <div class="container">
 
-            <form class="form-signin" th:action="@{/login}" method="post">
+              <form class="form-signin" th:action="@{/login}" method="post">
 
-                <div th:if="${param.error}" class="alert alert-error">    
-                      Invalid username and password.
-                  </div>
-                  <div th:if="${param.logout}" class="alert alert-success">
-                      You have been logged out.
-                  </div>
+                  <div th:if="${param.error}" class="alert alert-error">    
+                        Invalid username and password.
+                    </div>
+                    <div th:if="${param.logout}" class="alert alert-success">
+                        You have been logged out.
+                    </div>
 
-              <h2 class="form-signin-heading">Please sign in</h2>
-              <label for="username" class="sr-only">Email address</label>
-              <input type="text" id="username" name="username" class="form-control"
-                     placeholder="Username"/>
-              <label for="password" class="sr-only">Password</label>
-              <input type="password" id="password" name="password"
-                     class="form-control" placeholder="Password" />
-              <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-            </form>
+                <h2 class="form-signin-heading">Please sign in</h2>
+                <label for="username" class="sr-only">Email address</label>
+                <input type="text" id="username" name="username" class="form-control"
+                       placeholder="Username"/>
+                <label for="password" class="sr-only">Password</label>
+                <input type="password" id="password" name="password"
+                       class="form-control" placeholder="Password" />
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+              </form>
 
-          </div> <!-- /container -->        
+            </div> <!-- /container -->        
 
-          <!-- Latest compiled and minified JavaScript -->
-          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
-      </body>
-  </html>
+            <!-- Latest compiled and minified JavaScript -->
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
+        </body>
+    </html>
 
   ```
   Selanjutnya kita akan mendaftarkan template ini agar dapat diproses sebagai template yang tidak memiliki controller
 - Membuat Class KonfigurasiWeb(/resource-server/src/main/java/domain/config/Web.java)
   ```
-  @Configuration
-  public class KonfigurasiWeb extends WebMvcConfigurerAdapter {
+    @Configuration
+    public class KonfigurasiWeb extends WebMvcConfigurerAdapter {
 
-  }
+    }
   ```
 - Buat methode untuk mendaftarkan template(/resource-server/src/main/java/domain/config/Web.java)
   ```
-  @Override
-  public void addViewControllers(ViewControllerRegistry registry) {
-      registry.addViewController("/login").setViewName("login");
-  }
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/login").setViewName("login");
+    }
   ```
 - Selanjutnya kita akan tambahkan fasilitas logout pada UI(/resource-server/src/main/resources/templates/halo.html)
   ```
-  <form name="f" th:action="@{/logout}" method="post">
-      <input type="submit" value="Logout" />
-  </form>
+    <form name="f" th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout" />
+    </form>
   ```
 # Integrasi otorisasi Resources Server ke database
 Selanjutnya kita akan pindahkan otorisasi kita yang ada di (/resource-server/src/main/java/domain/config/KonfigurasiSecurity.java) ke database.
@@ -188,57 +188,57 @@ Selanjutnya kita akan pindahkan otorisasi kita yang ada di (/resource-server/src
   ```
 - Lalu kita akan konfigurasi database di (/resource-server/src/main/resources/application.properties)
   ```
-  spring.datasource.url=jdbc:mysql://localhost:3306/belajar_oauth
-  spring.datasource.username=belajar
-  spring.datasource.password=belajar
+    spring.datasource.url=jdbc:mysql://localhost:3306/belajar_oauth
+    spring.datasource.username=belajar
+    spring.datasource.password=belajar
   ```
 - Generate JPA(/resource-server/src/main/resources/application.properties)
   ```
-  spring.jpa.generate-ddl=true
+    spring.jpa.generate-ddl=true
   ```
 - Pertama kita akan buat database dulu(CLI)
   ```
-      mysql -u root -p
-      grant all on belajar_oauth.* to belajar@localhost identified by 'belajar'
-      create database belajar_oauth;
-    ```
+    mysql -u root -p
+    grant all on belajar_oauth.* to belajar@localhost identified by 'belajar'
+    create database belajar_oauth;
+  ```
 - Cara menggunakan mysql (CLI)
-    ```
-      use pelatihan;			///menggunakan tabel
-      show tables;			///memperlihatkan tabel dan datanya
-      show create table peserta \G	///memperlihatkan detil tabel
-      drop table peserta;		///redeploy tabel
-    ```
+  ```
+    use pelatihan;			///menggunakan tabel
+    show tables;			///memperlihatkan tabel dan datanya
+    show create table peserta \G	///memperlihatkan detil tabel
+    drop table peserta;		///redeploy tabel
+  ```
 - buat super user (CLI)
   ```
-  drop table if exists s_users;
+    drop table if exists s_users;
 
-  create table s_users (
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      username VARCHAR(100) UNIQUE NOT NULL,
-      password VARCHAR(255) NOT NULL,
-      enabled BOOLEAN
-  ) Engine=InnoDB;
+    create table s_users (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        username VARCHAR(100) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        enabled BOOLEAN
+    ) Engine=InnoDB;
 
-  insert into s_users (username, password, enabled)
-  values ('admin', '123', true);
-  insert into s_users (username, password, enabled)
-  values ('ciazhar', '123', true);
+    insert into s_users (username, password, enabled)
+    values ('admin', '123', true);
+    insert into s_users (username, password, enabled)
+    values ('ciazhar', '123', true);
 
-  create table s_permissions (
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      id_user VARCHAR(100) NOT NULL REFERENCES s_users(id),
-      user_role VARCHAR(255) NOT NULL
-  ) Engine=InnoDB;
+    create table s_permissions (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        id_user VARCHAR(100) NOT NULL REFERENCES s_users(id),
+        user_role VARCHAR(255) NOT NULL
+    ) Engine=InnoDB;
 
-  insert into s_permissions (id_user, user_role)
-  values (1, 'ROLE_SUPERVISOR');
+    insert into s_permissions (id_user, user_role)
+    values (1, 'ROLE_SUPERVISOR');
 
-  insert into s_permissions (id_user, user_role)
-  values (1, 'ROLE_OPERATOR');
+    insert into s_permissions (id_user, user_role)
+    values (1, 'ROLE_OPERATOR');
 
-  insert into s_permissions (id_user, user_role)
-  values (2, 'ROLE_OPERATOR');
+    insert into s_permissions (id_user, user_role)
+    values (2, 'ROLE_OPERATOR');
   ```
 - pindah otorisasi ke database (/resource-server/src/main/java/domain/config/KonfigurasiSecurity)
   ```
@@ -286,21 +286,22 @@ Ada beberapa file yang perlu dikonfigurasi yaitu :
 ## Konfigurasi Resource Server ##
 - Tambahkan dependeny OAuth2(resource-server/pom.xml)
   ```
-  <dependency>
-      <groupId>org.springframework.security.oauth</groupId>
-      <artifactId>spring-security-oauth2</artifactId>
-      <version>2.0.7.RELEASE</version>
-  </dependency>
+    <dependency>
+        <groupId>org.springframework.security.oauth</groupId>
+        <artifactId>spring-security-oauth2</artifactId>
+        <version>2.0.7.RELEASE</version>
+    </dependency>
   ```
 - setup security (resource-server/src/main/resources/application.properties)
   ```
-  logging.level.org.springframework.security=DEBUG
+    logging.level.org.springframework.security=DEBUG
   ```
 - Buat class KonfigurasiResourceServer (resource-server/src/main/java/domain/config/KonfigurasiResourceServer.java)
   ```
-  @Configuration
-  public class KonfigurasiResourceServer {
+    @Configuration
+    public class KonfigurasiResourceServer {
 
+    }
   ```
 - Setup RESOURCE_ID(resource-server/src/main/java/domain/config/KonfigurasiResourceServer.java)
   ```
@@ -308,136 +309,135 @@ Ada beberapa file yang perlu dikonfigurasi yaitu :
   ```
 - Buat inner class ResourceServerConfiguration (resource-server/src/main/java/domain/config/KonfigurasiResourceServer.java)
   ```
-  @Configuration
-  @EnableResourceServer
-  protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+    @Configuration
+    @EnableResourceServer
+    protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-  }
+    }
   ```
 - Buat methode (resource-server/src/main/java/domain/config/KonfigurasiResourceServer.java/ResourceServerConfiguration). Methode ini berfungsi untuk menyuruh authorization server melakukan pengecekan apakah access token valid atau tidak.
   ```
-  @Override
-  public void configure(ResourceServerSecurityConfigurer resources) {
-      RemoteTokenServices tokenService = new RemoteTokenServices();
-      tokenService.setClientId("clientauthcode");
-      tokenService.setClientSecret("123456");
-      tokenService.setCheckTokenEndpointUrl("http://localhost:10000/oauth/check_token");
-      resources
-              .resourceId(RESOURCE_ID)
-              .tokenServices(tokenService);
-  }
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) {
+        RemoteTokenServices tokenService = new RemoteTokenServices();
+        tokenService.setClientId("clientauthcode");
+        tokenService.setClientSecret("123456");
+        tokenService.setCheckTokenEndpointUrl("http://localhost:10000/oauth/check_token");
+        resources
+                .resourceId(RESOURCE_ID)
+                .tokenServices(tokenService);
+    }
   ```
 - Buat methode(resource-server/src/main/java/domain/config/KonfigurasiResourceServer.java/ResourceServerConfiguration). Methode ini berfungsi untuk memgatur api apa saja  yang dapat diakses dan oleh siapa saja yang dapat mengakses.
   ```
-  @Override
-  public void configure(HttpSecurity http) throws Exception {
-      http.authorizeRequests()
-              .antMatchers("/api/halo").hasRole("OPERATOR")
-              .antMatchers("/api/waktu").authenticated();
-  }
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/api/halo").hasRole("OPERATOR")
+                .antMatchers("/api/waktu").authenticated();
+    }
   ```
 ## Konfigurasi Authorization Server ##
 - Tambahkan dependeny OAuth2(auth-server/pom.xml)
   ```
-  <dependency>
-      <groupId>org.springframework.security.oauth</groupId>
-      <artifactId>spring-security-oauth2</artifactId>
-      <version>2.0.7.RELEASE</version>
-  </dependency>
+    <dependency>
+        <groupId>org.springframework.security.oauth</groupId>
+        <artifactId>spring-security-oauth2</artifactId>
+        <version>2.0.7.RELEASE</version>
+    </dependency>
   ```
 - setup security (auth-server/src/main/resources/application.properties)
   ```
-  logging.level.org.springframework.security=DEBUG
-  server.port=10000
+    logging.level.org.springframework.security=DEBUG
+    server.port=10000
   ```
 - Buat class KonfigurasiAuthorizationServer (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java)
   ```
-  @Configuration
-  public class KonfigurasiAuthorizationServer {
-  
-  }
+    @Configuration
+    public class KonfigurasiAuthorizationServer {
+
+    }
   ```
 - Buat inner class AuthorizationServerConfiguration (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java)
   ```
-  @Configuration
-  @EnableAuthorizationServer
-  protected static class AuthorizationServerConfiguration extends
-           AuthorizationServerConfigurerAdapter {
-  
-  }
+    @Configuration
+    @EnableAuthorizationServer
+    protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+
+    }
   ```
 - Setup RESOURCE_ID (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java)
   ```
-  private static final String RESOURCE_ID = "belajar";
+    private static final String RESOURCE_ID = "belajar";
   ```
 - Setup AuthenticationManager
   ```
-  @Autowired
-  @Qualifier("authenticationManagerBean")
-  private AuthenticationManager authenticationManager;
+    @Autowired
+    @Qualifier("authenticationManagerBean")
+    private AuthenticationManager authenticationManager;
   ```
 - Buat methode (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java/AuthorizationServerConfiguration). Methode ini berfungsi untuk menyimpan token yang nanti akan di cek kembali
   ```
-  @Override
-  public void configure(AuthorizationServerEndpointsConfigurer endpoints)
-          throws Exception {
-      endpoints
-              .tokenStore(new InMemoryTokenStore())
-              .authenticationManager(authenticationManager);
-  }
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints)
+            throws Exception {
+        endpoints
+                .tokenStore(new InMemoryTokenStore())
+                .authenticationManager(authenticationManager);
+    }
   ```
 - Buat methode (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java/AuthorizationServerConfiguration). Methode ini berfungsi untuk menentukan role apa saja yang dapat mendapat mengakses check token
   ```
-  @Override
-  public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-      oauthServer.checkTokenAccess("hasRole('CLIENT')");
-  }
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+        oauthServer.checkTokenAccess("hasRole('CLIENT')");
+    }
   ```
 - Buat methode (auth-server/src/main/java/domain/config/KonfigurasiAuthorizationServer.java/AuthorizationServerConfiguration). Methode ini berisi list role client berasarkan grant tye
   ```
-  @Override
-  public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-    clients
-      .inMemory()
-      .withClient("clientauthcode")
-        .secret("123456")
-        .authorizedGrantTypes("authorization_code","refresh_token")
-        .authorities("CLIENT")
-        .scopes("read","write")
-        .resourceIds(RESOURCE_ID)
-      .and()
-      .withClient("clientcred")
-        .secret("123456")
-        .authorizedGrantTypes("client_credentials")
-        .scopes("trust")
-        .resourceIds(RESOURCE_ID)
-      .and()
-      .withClient("clientapp")
-        .secret("123456")
-        .authorizedGrantTypes("password")
-        .scopes("read","write")
-        .resourceIds(RESOURCE_ID)  
-      .and()
-      .withClient("jsclient")
-        .secret("123456")
-        .authorizedGrantTypes("implicit")
-        .authorities("CLIENT")
-        .scopes("read","write")
-        .resourceIds(RESOURCE_ID)
-        .redirectUris("http://localhost:20000/implicit-client")
-        .accessTokenValiditySeconds(60* 60 *24)
-        .autoApprove(true);
-  }
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+      clients
+        .inMemory()
+        .withClient("clientauthcode")
+          .secret("123456")
+          .authorizedGrantTypes("authorization_code","refresh_token")
+          .authorities("CLIENT")
+          .scopes("read","write")
+          .resourceIds(RESOURCE_ID)
+        .and()
+        .withClient("clientcred")
+          .secret("123456")
+          .authorizedGrantTypes("client_credentials")
+          .scopes("trust")
+          .resourceIds(RESOURCE_ID)
+        .and()
+        .withClient("clientapp")
+          .secret("123456")
+          .authorizedGrantTypes("password")
+          .scopes("read","write")
+          .resourceIds(RESOURCE_ID)  
+        .and()
+        .withClient("jsclient")
+          .secret("123456")
+          .authorizedGrantTypes("implicit")
+          .authorities("CLIENT")
+          .scopes("read","write")
+          .resourceIds(RESOURCE_ID)
+          .redirectUris("http://localhost:20000/implicit-client")
+          .accessTokenValiditySeconds(60* 60 *24)
+          .autoApprove(true);
+    }
   ```
 - Konfigurasi Security (auth-server/src/main/java/domain/config/KonfigurasiSecurity)
   ```
-  @Override
-      @Bean
-      public AuthenticationManager authenticationManagerBean() throws Exception {
-          return super.authenticationManagerBean();
-      }
+    @Override
+        @Bean
+        public AuthenticationManager authenticationManagerBean() throws Exception {
+            return super.authenticationManagerBean();
+        }
   ```
-  
+
 
 # Flow untuk masing masing role clint #
 Perlu diketahui authorization server akan jalan di port 10000 dan resource server akan jalan di port 8080. OAuth 2 sendiri menyediakan 4 role yaitu :
@@ -481,16 +481,16 @@ Solusinya adalah :
 - Token tadi akan disimpan ke database menggunakan jdbc token store oleh auth server. Lalu resource server akan diarahkan ke database tersebut. Tetapi ada kalanya resource server tidak dapat mendapatkan akses ke database.
 - Menggunakan RemoteTokenServices yang ada pada setting KonfigurasiResourceServer
   ```
-  @Override
-  public void configure(ResourceServerSecurityConfigurer resources) {
-      RemoteTokenServices tokenService = new RemoteTokenServices();
-      tokenService.setClientId("clientauthcode");
-      tokenService.setClientSecret("123456");
-      tokenService.setCheckTokenEndpointUrl("http://localhost:10000/oauth/check_token");
-      resources
-              .resourceId(RESOURCE_ID)
-              .tokenServices(tokenService);
-  }
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) {
+        RemoteTokenServices tokenService = new RemoteTokenServices();
+        tokenService.setClientId("clientauthcode");
+        tokenService.setClientSecret("123456");
+        tokenService.setCheckTokenEndpointUrl("http://localhost:10000/oauth/check_token");
+        resources
+                .resourceId(RESOURCE_ID)
+                .tokenServices(tokenService);
+    }
   ```
   resource server akan mengarahkan ke url `http://localhost:10000/oauth/check_token` dengan menambahkan client id berupa `clientauthcode`, secret berupa `123456` dan access_token menggunakn methode GET. sehingga resource server mendapat data sebagai berikut :
   - rid :  `belajar`
@@ -580,7 +580,7 @@ Solusinya adalah :
 - Untuk mengaksesnya kita login dulu dengan menggunakan grant type clientauthcode sampai kita mendapatkan access tokenya
 - Setelah mendapatkanya masukkan url `http://localhost:8080/userinfo?access_token=blabla`
 
-# Membuat Aplikasi Client #
+# Membuat Aplikasi Client Auhtorization Code#
 Pertama kita akan membuat aplikasi client authcode sedehana menggunakan Spring Framework.
 Step by Step nya adalah sebagai berikut :
 - Download Setup projek di `http://start.spring.io`
@@ -591,21 +591,19 @@ Step by Step nya adalah sebagai berikut :
   * web
   * thymeleaf
 - Download lalu pindahkan ke text editor
-- Kita coba bikin Controller sebagi resources (client-authcode/src/main/java/domain/controller/HaloController)
+- Kita coba bikin Controller sebagi resources (client-authcode/src/main/java/domain/controller/InfoController)
   ```
-  @RestContoller
-  public class HaloController {
+    @Controller
+    public class InfoController {
 
-  }
+
+    }
   ```
-- Kita bikin methode untuk di proses ke user. Methode ini akan mengembalikan waktu sekarang menggunakan variabel `waktu`. methode ini dapat diakses di url /halo.(client-authcode/src/main/java/domain/controller/HaloController)
+- Kita bikin methode untuk di proses ke user. Methode ini akan mengembalikan waktu sekarang menggunakan variabel `waktu`. methode ini dapat diakses di url /halo.(client-authcode/src/main/java/domain/controller/InfoController)
   ```
-    @RequestMapping("/halo")
-    public void halo(Model m, @RequestParam(required = false) String nama){
-        m.addAttribute("waktu", new Date());
-        if(nama != null && !nama.isEmpty()){
-            m.addAttribute("pesan", "Halo "+nama);
-        }
+    @RequestMapping("/info")
+    public void info(Model m){
+      m.addAttribute("waktu", new Date().toString());
     }
   ```
 - Kita bikin UI untuk mengeluarkan informasi dari methode halo yang telah buat tadi.(client-authcode/src/main/resources/templates/halo.html)
@@ -617,11 +615,10 @@ Step by Step nya adalah sebagai berikut :
         <body>
             <h1>Halo Spring Boot</h1>
             <h2>Waktu saat ini : <span th:text="${waktu}"></span></h2>
-            <h3>Pesan : <span th:text="*{pesan}?:''">Halo</span></h3>
         </body>
     </html>
   ```
-# Proteksi Resource Server Dengan Spring Security
+# Proteksi Client Authorization Code Dengan Spring Security
 - Lalu coba kita proteksi Resource Server kita menggunakan Spring Security dengan menambahkan dependency di pom.xml. (client-authcode/pom.xml)
   ```
     <dependency>
@@ -637,10 +634,10 @@ Step by Step nya adalah sebagai berikut :
   Pada keadaan ini kita akan diminta otorisasi jika kita mengakses di browser dengan username : `user` dan password yang ada pada CLI. karena tidak efisien mengabaikan otorisasi.
 - Buat class untuk konfigurasi otorisasi (/client-authcode/src/main/java/domain/config/KonfigurasiSecurity)
   ```
-  @Configuration
-  public class KonfigurasiSecurity  extends WebSecurityConfigurerAdapter {
+    @Configuration
+    public class KonfigurasiSecurity  extends WebSecurityConfigurerAdapter {
 
-  }
+    }
   ```
 - Override methode configure (/client-authcode/src/main/java/domain/config/KonfigurasiSecurity). Methode untuk mengabaikan otorisasi
   ```
@@ -649,7 +646,7 @@ Step by Step nya adalah sebagai berikut :
       web.ignoring().anyRequest();
     }
   ```
-- Buat class untuk konfigurasi OAuth(/client-authcode/src/main/java/domain/config/KonfigurasiOauth2Client).
+- Buat class untuk konfigurasi OAuth Client (/client-authcode/src/main/java/domain/config/KonfigurasiOauth2Client).
   ```
     @Configuration
     @EnableOAuth2Client
@@ -657,31 +654,45 @@ Step by Step nya adalah sebagai berikut :
 
     }
   ```
--
+- Konfigurasi untuk Oauth2 Client (/client-authcode/src/main/java/domain/config/KonfigurasiOauth2Client)
   ```
-  private String urlAuthorization = "http://localhost:10000/oauth/authorize";
-  private String urlToken = "http://localhost:10000/oauth/token";
+    private String urlAuthorization = "http://localhost:10000/oauth/authorize";
+    private String urlToken = "http://localhost:10000/oauth/token";
 
-  @Bean
-  public OAuth2RestOperations oauthClient(OAuth2ClientContext context){
-      OAuth2RestTemplate restClient = new OAuth2RestTemplate(resource(), context);
-      return restClient;
-  }
+    @Bean
+    public OAuth2RestOperations restOperations(OAuth2ClientContext context){
+        OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resource(),context);
+        return restTemplate;
+    }
 
-  @Bean
-  public OAuth2ProtectedResourceDetails resource(){
-      AuthorizationCodeResourceDetails authCodeClient
-              = new AuthorizationCodeResourceDetails();
-      authCodeClient.setClientId("clientauthcode");
-      authCodeClient.setClientSecret("123456");
-      authCodeClient.setUserAuthorizationUri(urlAuthorization);
-      authCodeClient.setAccessTokenUri(urlToken);
-      return authCodeClient;
-  }
+    @Bean
+    public OAuth2ProtectedResourceDetails resource(){
+        AuthorizationCodeResourceDetails resourceDetails= new AuthorizationCodeResourceDetails();
+        resourceDetails.setClientId("clientauthcode");
+        resourceDetails.setClientSecret("123456");
+        resourceDetails.setUserAuthorizationUri(urlAuthorization);
+        resourceDetails.setAccessTokenUri(urlToken);
+        return resourceDetails;
+    }
   ```
--  a
+- Membuat Controler untuk mengakses api dari resource server
   ```
-  Map<String, Object> hasil = oauthClient.getForObject(apiHalo, HashMap.class);
-  System.out.println("Waktu dari server : "+hasil.get("waktu"));
-  m.addAttribute("waktu", new Date().toString());
+    @Autowired
+    private OAuth2RestOperations restOperations;
+
+    private String urlApi = "http://localhost:8080/api/halo";
+
+    @RequestMapping("/api")
+    @ResponseBody
+    public Map<String, Object> api (){
+      Map<String, Object> hasil = restOperations.getForObject(urlApi, HashMap.class);
+      return hasil;
+    }
   ```
+- Tambahkan konfigurasi context path dan server port
+  ```
+  server.port=9090
+  server.context-path=/authcode
+  ```
+  Keterangan :
+  membuat context-path wajib dikarenakan agar tidak terjadi error saat penyimpanan cookies
