@@ -27,7 +27,13 @@ public class InfoController {
 
   @RequestMapping("/info")
   public void info(Model m){
-    Map<String,String > hasil = restOperations.getForObject(urlApi, HashMap.class);
     m.addAttribute("waktu", new Date().toString());
+  }
+
+  @RequestMapping("/api")
+  @ResponseBody
+  public Map<String, Object> api (){
+    Map<String, Object> hasil = restOperations.getForObject(urlApi, HashMap.class);
+    return hasil;
   }
 }
