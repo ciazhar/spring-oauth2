@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class ResourceServerController {
-		@RequestMapping("/halo")
+	@RequestMapping("/halo")
     public void halo(Model m, @RequestParam(required = false) String nama){
         m.addAttribute("waktu", new Date());
         if(nama != null && !nama.isEmpty()){
@@ -23,7 +23,7 @@ public class ResourceServerController {
         }
     }
 
-		@CrossOrigin
+    @CrossOrigin
     @RequestMapping("/api/halo")
     @ResponseBody
     public Map<String, Object> haloApi(@RequestBody(required = false) Map<String, String> input){
@@ -39,10 +39,10 @@ public class ResourceServerController {
         return data;
     }
 
-		@CrossOrigin
-		@RequestMapping("/api/waktu")
-		@ResponseBody
-		public String waktu(){
+    @CrossOrigin
+    @RequestMapping("/api/waktu")
+    @ResponseBody
+    public String waktu(){
 			 return "{\"waktu\":\""+new Date().toString()+"\"}";
 		}
 }
