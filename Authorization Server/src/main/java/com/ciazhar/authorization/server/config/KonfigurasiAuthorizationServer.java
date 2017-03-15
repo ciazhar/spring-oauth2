@@ -66,7 +66,7 @@ public class KonfigurasiAuthorizationServer {
                     .authorities("CLIENT")
                     .scopes("read","write")
                     .resourceIds(RESOURCE_ID)
-                    .redirectUris("http://localhost:20000/implicit-client")
+                    .redirectUris("http://localhost:7070/implicit/implicit-client.html")
                     .accessTokenValiditySeconds(60* 60 *24)
                     .autoApprove(true);
         }
