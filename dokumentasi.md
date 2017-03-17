@@ -618,7 +618,7 @@ Step by Step nya adalah sebagai berikut :
         </body>
     </html>
   ```
-# Proteksi Client Authorization Code Dengan Spring Security
+## Proteksi Client Authorization Code Dengan Spring Security
 - Lalu coba kita proteksi Resource Server kita menggunakan Spring Security dengan menambahkan dependency di pom.xml. (client-authcode/pom.xml)
   ```
     <dependency>
@@ -696,3 +696,122 @@ Step by Step nya adalah sebagai berikut :
   ```
   Keterangan :
   membuat context-path wajib dikarenakan agar tidak terjadi error saat penyimpanan cookies
+
+# Membuat Aplikasi Client Implicit
+Pertama kita akan membuat aplikasi client authcode sedehana menggunakan Spring Framework.
+Step by Step nya adalah sebagai berikut :
+- Download Setup projek di `http://start.spring.io`
+- Isi projek metadata berupa :
+  * artifact id :
+  * groupId :
+- Isi dependency yang dubutuhkan berupa :
+  * web
+- Download lalu pindahkan ke text editor
+
+### Setting Server port dan Server Context Path
+```
+  server.port=7070
+  server.context-path=/implicit
+```
+### Membuat HTML sederhana
+```
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Oauth Client Implicit</title>
+  </head>
+  <body>
+      <div>
+          <h1>Oauth Client Implicit</h1>
+      </div>
+  <body>
+```
+### Setup Angular JS
+- tambahkan file angualar js ke project
+- buat file aplikasi js
+  ```
+    var app = angular.module('ImplicitApp',[]);
+    app.controller('DummyController',function(){
+    )};
+  ```
+- include ke html
+  ```
+    <body ng-app="ImplicitApp">
+    <div ng-controller="DummyController">
+        <h1>Oauth Client Implicit</h1>
+    </div>
+
+    <script src="js/angular.min.js"></script>
+    <script src="js/aplikasi.js"></script>
+  </body>
+  ```
+- test angular js
+  ```
+    <div ng-controller="DummyController">
+        <h1>Oauth Client Implicit</h1>
+        Masukkan Nama Anda : <input type="text" ng-model="nama"><br>
+        Selamat Datang  {{nama}}
+    </div>
+  ```
+### Impicit Client
+- angular js
+```
+  app.controller('DummyController',function($http, $scope, $window, $location){
+      var urlResourceServer = "http://localhost:8080/api/halo";
+      var urlAuthServer = "http://localhost:10000/oauth/authorize?client_id=jsclient&response_type=token";
+
+      $scope.bukaLoginPage = function () {
+          $window.location.href = urlAuthServer;
+      };
+
+      $scope.ambilTokenDariServer = function () {
+          var location = $location.url(); /// ngambil hash yang isinya #access_token=f2b50438-2c3a-4637-b6b9-e469543ff26d&token_type=bearer&expires_in=86399&scope=read%20write
+          console.log("Location : "+location);
+          var params = location.split("&");///jadi array yang isinya [access_token=f2b50438-2c3a-4637-b6b9-e469543ff26d , token_type=bearer , expires_in=86399 , scope=read%20write]
+          console.log("Param : "+params);
+          var tokenParam = params[0];///ambile param indek ke 0 yaitu access token
+          console.log("token Param : "+tokenParam);
+          var token = tokenParam.split("=")[1];
+          console.log("token : "+token);
+          $window.sessionStorage.setItem('token',token);
+      };
+
+      $scope.requestKeResourceServer = function () {
+
+          var token = $window.sessionStorage.getItem('token');
+          if (!token){
+              alert('Belum Login');
+              return;
+          }
+          $http.get(urlResourceServer+"?access_token="+token).then(
+              function (response) {
+                  $scope.responseDariServer = response.data;
+              },
+              function (response) {
+                  alert('Error Code'+response.status+', Error Text : '+response.statusText);
+              }
+          );
+      };
+  });
+```
+- html
+```
+  <div ng-controller="DummyController">
+      <h1>Oauth Client Implicit</h1>
+      Masukkan Nama Anda : <input type="text" ng-model="nama"><br>
+      Selamat Datang  {{nama}}
+
+      <hr>
+
+      <button ng-click="bukaLoginPage()">Login ke Server</button>
+      <button ng-click="ambilTokenDariServer()">Ambil Token dari Server</button>
+
+      <hr>
+
+      <button ng-click="requestKeResourceServer()">Merequest ke Resource Server</button>
+      <div>
+          {{responseDariServer}}
+      </div>
+  </div>
+```
