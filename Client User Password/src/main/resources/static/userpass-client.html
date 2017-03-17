@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Oauth Client User Password</title>
+</head>
+<body ng-app="UserPassApp">
+    <div ng-controller="DummyController">
+        <h1>Oauth Client User Password</h1>
+        Masukkan Nama Anda : <input type="text" ng-model="nama"><br>
+        Selamat Datang  {{nama}}
+
+        <hr>
+
+        <button ng-click="bukaLoginPage()">Login ke Server</button>
+        <button ng-click="ambilTokenDariServer()">Ambil Token dari Server</button>
+
+        <hr>
+
+        <button ng-click="requestKeResourceServer()">Merequest ke Resource Server</button>
+        <div>
+            {{responseDariServer}}
+        </div>
+    </div>
+
+    <script src="js/angular.min.js"></script>
+    <script src="js/aplikasi.js"></script>
+</body>
+</html>
