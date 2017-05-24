@@ -815,3 +815,5 @@ Step by Step nya adalah sebagai berikut :
       </div>
   </div>
 ```
+- Note
+Untuk mengatasi masalah CORS pastikan api anda telah mengunakan anotasi `@CrossOrigin`
