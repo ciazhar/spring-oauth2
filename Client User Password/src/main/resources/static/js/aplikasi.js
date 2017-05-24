@@ -7,22 +7,23 @@ var app = angular.module('UserPassApp',[]);
 app.controller('DummyController',function($http, $scope, $window, $location){
     var urlResourceServer = "http://localhost:8080/api/halo";
     var urlAuthServer = "http://localhost:10000/oauth/authorize?client_id=jsclient&response_type=token";
+    var username
 
-    $scope.bukaLoginPage = function () {
-        $window.location.href = urlAuthServer;
-    };
+    var postData = {
+        client_id : "clientapp",
+        grant_type : "password",
+        username : $scope.username,
+        password : $scope.password
+    }
 
-    $scope.ambilTokenDariServer = function () {
-        var location = $location.url(); /// ngambil hash yang isinya #access_token=f2b50438-2c3a-4637-b6b9-e469543ff26d&token_type=bearer&expires_in=86399&scope=read%20write
-        console.log("Location : "+location);
-        var params = location.split("&");///jadi array yang isinya [access_token=f2b50438-2c3a-4637-b6b9-e469543ff26d , token_type=bearer , expires_in=86399 , scope=read%20write]
-        console.log("Param : "+params);
-        var tokenParam = params[0];///ambile param indek ke 0 yaitu access token
-        console.log("token Param : "+tokenParam);
-        var token = tokenParam.split("=")[1];
-        console.log("token : "+token);
-        $window.sessionStorage.setItem('token',token);
-    };
+    $http.post().then(
+        function (response){
+
+        },
+        function (response){
+
+        }
+    );
 
     $scope.requestKeResourceServer = function () {
 

@@ -7,13 +7,12 @@
 <body ng-app="UserPassApp">
     <div ng-controller="DummyController">
         <h1>Oauth Client User Password</h1>
-        Masukkan Nama Anda : <input type="text" ng-model="nama"><br>
-        Selamat Datang  {{nama}}
+        Username : <input type="text" ng-model="username">
+        Password : <input type="text" ng-model="password">
 
         <hr>
 
-        <button ng-click="bukaLoginPage()">Login ke Server</button>
-        <button ng-click="ambilTokenDariServer()">Ambil Token dari Server</button>
+        <button ng-click="requestToken()">Request Token</button>
 
         <hr>
 
